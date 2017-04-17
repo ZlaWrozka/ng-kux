@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { routes } from './select.routes';
 import { SelectComponent } from './select.component';
-import { KuxSelectModule } from '../../ng-kux'
+import { KuxSelectModule } from '../../ng-kux/select'
 @NgModule({
   imports: [
     CommonModule,

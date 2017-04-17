@@ -14,8 +14,6 @@ interface BarXAttr {
     width: number | string;
   }
 }
-
-
 /** Y轴滚动条
  * 
  * @export
@@ -191,8 +189,7 @@ export class ScrollBarX implements AfterViewInit {
     `
     :host{
       display: block;
-      float:left;    
-      padding-right: 20px;
+      float:left;
     }
     `
   ]
@@ -218,7 +215,7 @@ export class ScrollbarContent {
 @Component({
   selector: 'kux-scrollbar',
   template: `
-    <div class="kux-scrollbar-box">
+    <div class="kux-scrollbar-box" (wheel)="scrolling($event)">
       <kux-scrollbar-content>
         <ng-content></ng-content> 
       </kux-scrollbar-content>
@@ -228,14 +225,13 @@ export class ScrollbarContent {
   `,
   styleUrls: ['./scrollbar.component.css'],
   host: {
-    '[class]': '"kux-scrollbar"',
-    '(mousewheel)': 'scrolling()',
-    '(DOMMouseScroll)': 'scrolling($event)'
+    '[class]': '"kux-scrollbar"'
   }
 })
 export class KuxScrollbarComponent implements AfterViewInit {
   private $scrollTop: number = 0;
   private $scrollLeft: number = 0;
+  private support: string;
   /** 自动隐藏滚动条 */
   @Input() autoHide: boolean = true;
   @Input() private paddingOffset: number = 0;
@@ -271,9 +267,18 @@ export class KuxScrollbarComponent implements AfterViewInit {
   ) {
     this.box = el.nativeElement;
   }
-  scrolling() { //鼠标纵向滚动触发
+
+  scrolling(e?: MouseWheelEvent) { //鼠标纵向滚动触发
     let scrollTop = this.box.children[0].scrollTop,
       scrollLeft = this.box.children[0].scrollLeft;
+    if (e) {
+      scrollTop += e.deltaY;
+      scrollLeft += e.deltaX;
+
+      this.box.children[0].scrollTop = scrollTop;
+      this.box.children[0].scrollLeft = scrollLeft;
+    }
+
     this.$scrollTop = scrollTop;
     this.$scrollLeft = scrollLeft;
     if (this.emittedY !== scrollTop || this.emittedX !== scrollLeft) {
@@ -286,22 +291,23 @@ export class KuxScrollbarComponent implements AfterViewInit {
     } else if (scrollTop >= this.maxYScroll) {
       this.barYAttr.style.transform = `translateY(${this.barYMaxTop + 'px'})`;
     } else {
+      if (e) { e.preventDefault() }
       this.barYAttr.style.transform = `translateY(${scrollTop / this.maxYScroll * this.barYMaxTop + 'px'})`;
     }
-
     if (scrollLeft <= 0) {
       this.barXAttr.style.transform = 'translateX(0)'
     } else if (scrollLeft >= this.maxXScroll) {
       this.barXAttr.style.transform = `translateX(${this.barXMaxLeft + 'px'})`;
     } else {
+      if (e) { e.preventDefault() }
       this.barXAttr.style.transform = `translateX(${scrollLeft / this.maxXScroll * this.barXMaxLeft + 'px'})`;
     }
   }
   initScroll() { //初始化滚动参数
     this.boxHeight = this.box.offsetHeight;
     this.boxWidth = this.box.offsetWidth;
-    this.contentHeight = this.content.el.offsetHeight + 0;
-    this.contentWidth = this.content.el.offsetWidth - 20;
+    this.contentHeight = this.content.el.offsetHeight;
+    this.contentWidth = this.content.el.offsetWidth;
     this.maxYScroll = this.contentHeight - this.boxHeight;
     this.maxXScroll = this.contentWidth - this.boxWidth;
     let barHeight = this.boxHeight / this.contentHeight * this.boxHeight;
