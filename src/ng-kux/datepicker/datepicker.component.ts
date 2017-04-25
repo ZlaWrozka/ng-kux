@@ -54,16 +54,16 @@ export class kuxDatepickerBtn {
   },
 })
 export class KuxDatepickerComponent implements OnInit {
-  private value: any;
-  @Input() private min: Date;
-  @Input() private max: Date;
-  @Input() private today: Date;
-  @Input() private placement: any;
-  @Input() private placeholder: string;
-  @Input() private step: number;
+  public value: any;
+  @Input() public min: Date;
+  @Input() public max: Date;
+  @Input() public today: Date;
+  @Input() public placement: any;
+  // @Input() public placeholder: string;
+  @Input() public step: number;
   @Input() public disabled: boolean = false;                                     //你懂得
-  @Input() private panleFmt: string = 'MM/dd/yyyy';
-  @Input() private fmt: string = 'MM/dd/yyyy';
+  @Input() public panleFmt: string = 'MM/dd/yyyy';
+  @Input() public fmt: string = 'MM/dd/yyyy';
   @Output() private valueChange: EventEmitter<any> = new EventEmitter();
   @ViewChild(kuxDatepickerBtn) private btn: kuxDatepickerBtn;
   public isOpen: boolean = false;                                           //是否显示日期面板
@@ -192,7 +192,6 @@ export class KuxDatepickerPanelComponent implements OnInit {
   @Input() private min: Date;
   @Input() private max: Date;
   @Input() private today: Date;
-  @Input() private placeholder: string;
   @Input() private step: number;
   @Input() private fmt: string = 'MM/dd/yyyy';
   @Output() public onSelect: EventEmitter<Date> = new EventEmitter();
