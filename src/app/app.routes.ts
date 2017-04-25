@@ -12,6 +12,9 @@ const APP_ROUTES: Routes = [
         path: 'scrollbar',
         loadChildren: './scrollBar#ScrollBarModule'
       }, {
+        path: 'datepicker',
+        loadChildren: './datepicker#DatepickerModule'
+      }, {
         path: '**',
         redirectTo: 'select'
       }

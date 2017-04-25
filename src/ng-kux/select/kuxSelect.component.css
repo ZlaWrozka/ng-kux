@@ -26,4 +26,5 @@ button:fucus
 :host.disabled >>> .kux-select-btn
 {
     background-color: #f1f1f1;
+    cursor:default;
 }

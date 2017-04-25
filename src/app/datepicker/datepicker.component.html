@@ -1,3 +1,12 @@
 <p>
-  datepicker works!
+    <kux-datepicker-panel [date]="planel.date" (onSelect)="logDate($event)" [fmt]="'yyyy年M月d日'" [min]="planel.min" [max]="planel.max"></kux-datepicker-panel>
 </p>
+<br>
+<br>
+<br>
+<br>
+
+<p>
+    <kux-datepicker [(ngModel)]="test" [panleFmt]="'yyyy年M月d日'" [fmt]="'yyyy-M-d'" [placement]="['bottom','left']" [min]="form.min" [max]="form.max" [step]="3"></kux-datepicker>
+</p>
+<p>{{form.date}}</p>

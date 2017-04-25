@@ -28,7 +28,7 @@ export class SelectComponent implements OnInit {
       value: 6
     }
   ];
-  public selected = null;
+  public selected = 1;
   constructor() {
 
   }
