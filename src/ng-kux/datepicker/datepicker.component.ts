@@ -21,7 +21,7 @@ export class kuxDatepickerBtn {
   selector: 'kux-datepicker[ngModel]',
   template: `
     <button kux-datepicker-btn class="kux-datepicker-input" (blur)="tryToClose()" (click)="open()">{{value|kuxDataFormat:fmt}}</button>
-    <kux-datepicker-panel [step]="step" [fmt]="panleFmt" [min]="min" [max]="max" [@fadeInOut]="'in'" (onSelect)="pickDate($event)" (mouseenter)="setSelecting()" (click)="setSelecting()" (mouseleave)="mouseOut()" *ngIf="isOpen" [ngStyle]="data.position" (onSizeChange)="fn.changeSize($event,btn)"></kux-datepicker-panel>
+    <kux-datepicker-panel [date]="value" [step]="step" [fmt]="panleFmt" [min]="min" [max]="max" [@fadeInOut]="'in'" (onSelect)="pickDate($event)" (mouseenter)="setSelecting()" (click)="setSelecting()" (mouseleave)="mouseOut()" *ngIf="isOpen" [ngStyle]="data.position" (onSizeChange)="fn.changeSize($event,btn)"></kux-datepicker-panel>
   `,
   providers: [NgModel, KuxDatepickerFormServiceService],
   animations: [fadeInOut],
@@ -208,7 +208,7 @@ export class KuxDatepickerPanelComponent implements OnInit {
     });
     this.service.height.subscribe((h: number) => {
       this.onSizeChange.emit(h);
-    })
+    });
   }
   ngOnInit() {
     this.service.init(this.date, this.today, this.min, this.max, this.step);

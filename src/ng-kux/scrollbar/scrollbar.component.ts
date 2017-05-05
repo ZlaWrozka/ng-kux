@@ -225,7 +225,8 @@ export class ScrollbarContent {
   `,
   styleUrls: ['./scrollbar.component.css'],
   host: {
-    '[class]': '"kux-scrollbar"'
+    '[class]': '"kux-scrollbar"',
+    '(window:resize)': "refresh()"
   }
 })
 export class KuxScrollbarComponent implements AfterViewInit {
@@ -238,10 +239,10 @@ export class KuxScrollbarComponent implements AfterViewInit {
   @Output() private onScroll: EventEmitter<{ x: number, y: number }> = new EventEmitter();    //向外部传播滚动事件
   @ViewChild(ScrollbarContent) private content: ScrollbarContent;                             //内容容器
   private box: HTMLElement;            //滚动容器；
-  private boxHeight: number = 0;       //滚动容器高度
-  private boxWidth: number = 0;        //滚动容器宽度
-  private contentHeight: number = 0;   //内容高度
-  private contentWidth: number = 0;    //内容宽度
+  public boxHeight: number = 0;       //滚动容器高度
+  public boxWidth: number = 0;        //滚动容器宽度
+  public contentHeight: number = 0;   //内容高度
+  public contentWidth: number = 0;    //内容宽度
   private maxYScroll: number = 0;      //Y轴最大滚动高度
   private maxXScroll: number = 0;      //X轴最大滚动高度
   private barYMaxTop: number = 0;      //Y轴滚动条最大高度
@@ -267,8 +268,14 @@ export class KuxScrollbarComponent implements AfterViewInit {
   ) {
     this.box = el.nativeElement;
   }
-
-  scrolling(e?: MouseWheelEvent) { //鼠标纵向滚动触发
+  private emitScrollEvent() {
+    if (this.emittedY !== this.$scrollTop || this.emittedX !== this.$scrollLeft) {
+      this.emittedY = this.$scrollTop;
+      this.emittedX = this.$scrollLeft;
+      this.onScroll.emit({ x: this.$scrollLeft, y: this.$scrollTop });
+    }
+  }
+  scrolling(e?: MouseWheelEvent, unEmit?: boolean) { //鼠标纵向滚动触发
     let scrollTop = this.box.children[0].scrollTop,
       scrollLeft = this.box.children[0].scrollLeft;
     if (e) {
@@ -276,16 +283,18 @@ export class KuxScrollbarComponent implements AfterViewInit {
       scrollLeft += e.deltaX;
 
       this.box.children[0].scrollTop = scrollTop;
+      scrollTop = this.box.children[0].scrollTop
       this.box.children[0].scrollLeft = scrollLeft;
+      scrollLeft = this.box.children[0].scrollLeft;
     }
 
     this.$scrollTop = scrollTop;
     this.$scrollLeft = scrollLeft;
-    if (this.emittedY !== scrollTop || this.emittedX !== scrollLeft) {
-      this.emittedY = scrollTop;
-      this.emittedX = scrollLeft
-      this.onScroll.emit({ x: scrollLeft, y: scrollTop });
+    if (unEmit !== true) {
+      this.emitScrollEvent();
     }
+
+
     if (scrollTop <= 0) {
       this.barYAttr.style.transform = 'translateY(0)';
     } else if (scrollTop >= this.maxYScroll) {
@@ -312,6 +321,12 @@ export class KuxScrollbarComponent implements AfterViewInit {
     this.maxXScroll = this.contentWidth - this.boxWidth;
     let barHeight = this.boxHeight / this.contentHeight * this.boxHeight;
     let barWidth = this.boxWidth / this.contentWidth * this.boxWidth;
+    if (barHeight < 30) {
+      barHeight = 30;
+    }
+    if (barWidth < 30) {
+      barWidth = 30;
+    }
     this.barYAttr.style.height = barHeight + 'px';
     this.barXAttr.style.width = barWidth + 'px';
     this.barYMaxTop = this.boxHeight - barHeight;
@@ -338,7 +353,8 @@ export class KuxScrollbarComponent implements AfterViewInit {
     }
     this.barYAttr.style.transform = `translateY(${h + 'px'})`;
     this.box.children[0].scrollTop = h * this.maxYScroll / (this.barYMaxTop - this.paddingOffset);
-    this.$scrollTop = this.box.children[0].scrollTop
+    this.$scrollTop = this.box.children[0].scrollTop;
+    this.emitScrollEvent()
   }
   dragScrollX(e: number) { //X轴拖动
     let l = +this.barXAttr.style.transform.match(/(\d+)/)[0];
@@ -352,6 +368,7 @@ export class KuxScrollbarComponent implements AfterViewInit {
     this.barXAttr.style.transform = `translateX(${l + 'px'})`;
     this.box.children[0].scrollLeft = l * this.maxXScroll / (this.barXMaxLeft - this.paddingOffset);
     this.$scrollLeft = this.box.children[0].scrollLeft;
+    this.emitScrollEvent();
   }
   ngAfterViewInit() {
     setTimeout(() => {
@@ -374,11 +391,14 @@ export class KuxScrollbarComponent implements AfterViewInit {
   public isScrollToRight() {
     return this.$scrollLeft >= this.maxXScroll
   }
-  public refresh() {
-    setTimeout(() => {
-      this.initScroll();
-      this.scrolling();
-    })
+  public refresh(unEmit?: boolean) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        this.initScroll();
+        this.scrolling(null, unEmit);
+        resolve();
+      });
+    });
   }
   get scrollTop() {
     return this.$scrollTop;

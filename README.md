@@ -1,5 +1,5 @@
 # NG-KuX    UI Component For Angular4
-
+## Demo [https://coolcross.github.io](https://coolcross.github.io/#/select)
 ---
 
 ## Select
@@ -144,3 +144,58 @@ placement|string \| Array|['bottom','left'] | panle placement -bottom \| top \| 
 min|Date|null|Minimum allowed date for selection
 max|Date|null|Maximum allowed date for selection
 step|Number|3|3-pickday 2-pickmonth 1-pickyear
+
+---
+## Scroll
+### infinite scroll component
+#### In NgModule
+```typescript
+import { KuxScrollModule } from '../../ng-kux/scroll'
+...
+
+@NgModule({
+  imports: [
+    KuxScrollModule,
+    ...
+  ],
+  ...
+})
+export class SomeModule { }
+```
+#### In Component
+```typescript
+import { KuxScrollComponent } from 'ng-kux/scroll/scroll.component';
+...
+
+@Component({
+  templateUrl: './some.html',
+  ...
+})
+export class SomeComponent implements OnInit {
+    @ViewChild(KuxScrollComponent) kuxScroll: KuxScrollComponent;
+    private AllData:any[] //some big Array
+    ngOnInit() {
+        let num = 0;
+        this.kuxScroll.getData = (begin, length) => {
+            let list = [];
+            for (let i = begin; i < begin + length; i++) {
+                let item = this.AllData[i];
+                if (item !== undefined) {
+                    list.push(item)
+                }
+            }
+            return list
+        }
+    }
+}
+```
+
+
+#### In Component Template
+```html
+<kux-scroll>
+    <ul>
+    <li *ngFor="let item of kuxScroll.displayD" kux-scroll-item>{{item.name}}</li>
+    </ul>
+</kux-scroll>
+```

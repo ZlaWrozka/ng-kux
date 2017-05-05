@@ -1,9 +1,9 @@
 {
   "assets/js/polyfills": {
-    "js": "assets/js/polyfills.fae76a12ce06be10d804.bundle.js"
+    "js": "assets/js/polyfills.bundle.js"
   },
   "assets/js/main": {
-    "js": "assets/js/main.f39bb9495cf827234630.bundle.js"
+    "js": "assets/js/main.bundle.js"
   },
   "vendor": {
     "js": "assets/js/vendor.js"
