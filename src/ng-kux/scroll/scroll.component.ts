@@ -47,7 +47,10 @@ export class KuxScrollComponent implements AfterViewInit {
         this.scrollTopList.push(e.y);
         this.checkScrollTopList();
     }
-
+    resizeFn() {
+        this.param.direction = 1;
+        this.aline(this.kuxScrollbar.scrollTop);
+    }
     private checkScrollTopList() {
         if (this.scrolling == false) {
             this.scrolling = true
@@ -58,6 +61,8 @@ export class KuxScrollComponent implements AfterViewInit {
             } else if (s < this.param.scrolledTop) {
                 this.param.direction = 0;
                 this.aline(s);
+            } else {
+                this.scrolling = false
             }
             this.param.scrolledTop = s;
             this.scrollTopList.length = 0;
@@ -116,7 +121,7 @@ export class KuxScrollComponent implements AfterViewInit {
     }
     private fillNext() {
         if (this.param.direction == 1) {
-            let last = this.blockItem.last; last = this.blockItem.last
+            let last = this.blockItem.last; last = this.blockItem.last;
             if (last && last.el.offsetTop + last.height >= this.kuxScrollbar.scrollTop + this.kuxScrollbar.boxHeight * 1.2) {
                 this.scrolling = false;
                 return;
@@ -124,7 +129,7 @@ export class KuxScrollComponent implements AfterViewInit {
             this.findNextData().then(() => {
                 this.kuxScrollbar.refresh(true).then(() => {
                     let last = this.blockItem.last; last = this.blockItem.last
-                    if (last.el.offsetTop + last.height < this.kuxScrollbar.scrollTop + this.kuxScrollbar.boxHeight * 1.2) {
+                    if (last.el.offsetTop + last.height <= this.kuxScrollbar.scrollTop + this.kuxScrollbar.boxHeight * 1.2) {
                         this.fillNext();
                     } else {
                         this.param.direction = -1;
@@ -139,7 +144,6 @@ export class KuxScrollComponent implements AfterViewInit {
         if (_begin < 0) {
             return -1
         } else {
-            // console.log(scrollTop,this.param.heightPoints)
             return this.binary(this.param.heightPoints, scrollTop)
         }
     }
