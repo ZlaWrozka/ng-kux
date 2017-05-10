@@ -190,6 +190,7 @@ export class ScrollBarX implements AfterViewInit {
     :host{
       display: block;
       float:left;
+      min-width: 100%;
     }
     `
   ]
@@ -233,6 +234,7 @@ export class KuxScrollbarComponent implements AfterViewInit {
   private $scrollTop: number = 0;
   private $scrollLeft: number = 0;
   private support: string;
+  public inited: Promise<any>;
   /** 自动隐藏滚动条 */
   @Input() autoHide: boolean = true;
   @Input() private paddingOffset: number = 0;
@@ -371,8 +373,11 @@ export class KuxScrollbarComponent implements AfterViewInit {
     this.emitScrollEvent();
   }
   ngAfterViewInit() {
-    setTimeout(() => {
-      this.initScroll();
+    this.inited = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        this.initScroll();
+        resolve();
+      })
     })
   }
   /** 是否滚动到了底部

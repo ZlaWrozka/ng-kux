@@ -11,9 +11,9 @@ body
 }
 body
 {
-    -webkit-animation: bg-gradient 20s ease infinite;
+    /*-webkit-animation: bg-gradient 20s ease infinite;
        -moz-animation: bg-gradient 20s ease infinite;
-            animation: bg-gradient 20s ease infinite;
+            animation: bg-gradient 20s ease infinite;*/
 
     color: #333;
     background: linear-gradient(47deg, #097394, #10b0c4, #097394, #10b0c4);
