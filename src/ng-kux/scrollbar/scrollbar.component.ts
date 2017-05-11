@@ -22,7 +22,7 @@ interface BarXAttr {
  */
 @Component({
   selector: 'kux-scrollbar-y',
-  template: `<div class="kux-scrollbar-y" [ngStyle]="attr.style" *ngIf="attr.show"></div>`,
+  template: `<div class="kux-scrollbar-y" [ngStyle]="attr.style" *ngIf="attr.show" (click)="stopEvent($event)"></div>`,
   styles: [
     `
     :host{
@@ -35,18 +35,19 @@ interface BarXAttr {
       transition: opacity .2s;
     }
     :host.visible{
-      opacity: 1;
+      opacity: .8;
     }
     :host:hover,:host.keep{
       width:8px;
-      opacity: 1;
+      opacity: .8;
+      background: #eee;
     }
     .kux-scrollbar-y{
       position: absolute;
       right: 0px;
       height:100px;
       width: 4px;
-      background-color: rgba(0, 0, 0, 0.2);
+      background-color: #aaa;
       border-radius: 2px;
       cursor: pointer;
       transition: height .2s,background-color .2s;
@@ -54,13 +55,14 @@ interface BarXAttr {
     :host:hover .kux-scrollbar-y,:host.keep .kux-scrollbar-y{
       width:8px;
       border-radius: 4px;
-      background-color: rgba(0, 0, 0, 0.4);
+      background-color: #999;
     }
     `
   ],
   host: {
     '(mousedown)': 'fn.begingMove($event,0)',
-    '[class]': `"kux-scrollbar-content"`
+    '[class]': `"kux-scrollbar-content"`,
+    '(click)': 'jump($event)'
   },
   providers: [KuxScrollHelper]
 })
@@ -68,6 +70,7 @@ export class ScrollBarY implements AfterViewInit {
   @Input() public attr: BarYAttr;
   @Input() public autoHide: boolean = true;
   @Output() public onDrag: EventEmitter<number> = new EventEmitter();
+  @Output() public onJump: EventEmitter<number> = new EventEmitter();
   public fn: any;
   constructor(
     @Self() private helper: KuxScrollHelper,
@@ -88,6 +91,17 @@ export class ScrollBarY implements AfterViewInit {
       }
     })
   }
+  jump(e) {
+    let el = <HTMLElement>this.el.nativeElement, top = 0;
+    while (el.offsetParent !== null) {
+      top += el.offsetTop;
+      el = <HTMLElement>el.offsetParent;
+    }
+    this.onJump.emit((e.pageY - top) / this.el.nativeElement.offsetHeight)
+  }
+  stopEvent(e: MouseEvent) {
+    e.stopPropagation();
+  }
   ngAfterViewInit() {
     if (this.autoHide === false) {
       this.renderer.addClass(this.el.nativeElement, 'visible');
@@ -104,7 +118,7 @@ export class ScrollBarY implements AfterViewInit {
  */
 @Component({
   selector: 'kux-scrollbar-x',
-  template: `<div class="kux-scrollbar-x" [ngStyle]="attr.style" *ngIf="attr.show"></div>`,
+  template: `<div class="kux-scrollbar-x" [ngStyle]="attr.style" *ngIf="attr.show" (click)="stopEvent($event)"></div>`,
   styles: [
     `
     :host{
@@ -116,11 +130,12 @@ export class ScrollBarY implements AfterViewInit {
       transition: opacity .2s;
     }
     :host.visible{
-      opacity: 1;
+      opacity: .8;
     }
     :host:hover,:host.keep{
       height:8px;
-      opacity: 1;
+      opacity: .8;
+      background: #eee;
     }
     .kux-scrollbar-x{
       position: absolute;
@@ -128,7 +143,7 @@ export class ScrollBarY implements AfterViewInit {
       left: 0;
       width:100px;
       height: 4px;
-      background-color: rgba(0, 0, 0, 0.2);
+      background-color: #aaa;
       border-radius: 2px;
       cursor: pointer;
       transition: height .2s,background-color .2s;
@@ -136,20 +151,22 @@ export class ScrollBarY implements AfterViewInit {
     :host:hover .kux-scrollbar-x, :host.keep .kux-scrollbar-x{
       height:8px;
       border-radius: 4px;
-      background-color: rgba(0, 0, 0, 0.4);
+      background-color: #999;
     }
     `
   ],
   providers: [KuxScrollHelper],
   host: {
     '(mousedown)': 'fn.begingMove($event,1)',
-    '[class]': '"kux-scrollbar-content"'
+    '[class]': '"kux-scrollbar-content"',
+    '(click)': 'jump($event)'
   },
 })
 export class ScrollBarX implements AfterViewInit {
   @Input() public attr: BarXAttr;
   @Input() public autoHide: boolean = true;
   @Output() public onDrag: EventEmitter<number> = new EventEmitter();
+  @Output() public onJump: EventEmitter<number> = new EventEmitter();
   public fn: any;
   constructor(
     @Self() private helper: KuxScrollHelper,
@@ -168,6 +185,17 @@ export class ScrollBarX implements AfterViewInit {
         renderer.removeClass(el.nativeElement, 'keep')
       }
     })
+  }
+  jump(e) {
+    let el = <HTMLElement>this.el.nativeElement, left = 0;
+    while (el.offsetParent !== null) {
+      left += el.offsetLeft;
+      el = <HTMLElement>el.offsetParent;
+    }
+    this.onJump.emit((e.pageX - left) / this.el.nativeElement.offsetWidth)
+  }
+  stopEvent(e: MouseEvent) {
+    e.stopPropagation();
   }
   ngAfterViewInit() {
     if (this.autoHide === false) {
@@ -221,8 +249,8 @@ export class ScrollbarContent {
         <ng-content></ng-content> 
       </kux-scrollbar-content>
     </div>
-    <kux-scrollbar-y [attr]="barYAttr" (onDrag)="dragScrollY($event)" [autoHide]="autoHide"></kux-scrollbar-y>
-    <kux-scrollbar-x [attr]="barXAttr" (onDrag)="dragScrollX($event)" [autoHide]="autoHide"></kux-scrollbar-x>
+    <kux-scrollbar-y [attr]="barYAttr" (onDrag)="dragScrollY($event)" (onJump)="jumpY($event)" [autoHide]="autoHide"></kux-scrollbar-y>
+    <kux-scrollbar-x [attr]="barXAttr" (onDrag)="dragScrollX($event)" (onJump)="jumpX($event)" [autoHide]="autoHide"></kux-scrollbar-x>
   `,
   styleUrls: ['./scrollbar.component.css'],
   host: {
@@ -276,6 +304,12 @@ export class KuxScrollbarComponent implements AfterViewInit {
       this.emittedX = this.$scrollLeft;
       this.onScroll.emit({ x: this.$scrollLeft, y: this.$scrollTop });
     }
+  }
+  jumpY(p: number) {
+    this.scrollTop = p * this.maxYScroll
+  }
+  jumpX(p: number) {
+    this.scrollLeft = p * this.maxXScroll
   }
   scrolling(e?: MouseWheelEvent, unEmit?: boolean) { //鼠标纵向滚动触发
     let scrollTop = this.box.children[0].scrollTop,

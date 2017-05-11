@@ -56,13 +56,15 @@ export class KuxScrollComponent implements AfterViewInit {
             this.scrolling = true
             let s = this.scrollTopList.pop();
             if (s > this.param.scrolledTop) {
+                this.isTop = false;
                 this.param.direction = 1;
                 this.aline(s);
             } else if (s < this.param.scrolledTop) {
+                this.isBottom = false;
                 this.param.direction = 0;
                 this.aline(s);
             } else {
-                this.scrolling = false
+                this.scrolling = false;
             }
             this.param.scrolledTop = s;
             this.scrollTopList.length = 0;
@@ -79,9 +81,11 @@ export class KuxScrollComponent implements AfterViewInit {
     private getPreData(scrollTop) {
         let _begin = this.findFallPoint(scrollTop);
         if (_begin < this.param.begin) {
+            this.isTop = false;
             this.param.direction = -1
             let b = (_begin + 1) * this.param.length;
-            this.display.unshift.apply(this.display, this.getData(b, (this.param.begin - _begin) * this.param.length));
+            let preData = this.getData(b, (this.param.begin - _begin) * this.param.length)
+            this.display.unshift.apply(this.display, preData);
             this.topHolderHeight = this.param.index2height[_begin * this.param.length] || 0;
             let pass = true;
             this.display = this.display.filter((item) => {
@@ -105,6 +109,7 @@ export class KuxScrollComponent implements AfterViewInit {
                 this.param.direction = 0;
             });
         } else {
+            this.isTop = true;
             this.scrolling = false
         }
     }
@@ -167,11 +172,13 @@ export class KuxScrollComponent implements AfterViewInit {
         return new Promise((resolve, reject) => {
             let newItem = <any[] | Promise<any>>this.getData(this.param.end, this.param.length);
             if (newItem instanceof Array) {
+                this.isBottom = newItem.length == 0 ? true : false;
                 this.display.push.apply(this.display, this.addKuXIndex(newItem));
                 this.param.end += this.param.length;
                 resolve()
             } else if (newItem instanceof Promise) {
                 newItem.then((data: any[]) => {
+                    this.isBottom = data.length == 0 ? true : false;
                     this.display.push.apply(this.display, this.addKuXIndex(newItem));
                     this.param.end += this.param.length;
                     resolve();
@@ -209,140 +216,6 @@ export class KuxScrollComponent implements AfterViewInit {
             this.param.point2index[_index] = this.param.heightPoints.length - 1;
         }
     }
-
-    // public scrollFn(e) {
-    //     this.aline(e.y < this.param.scrolledTop);
-    //     this.param.scrolledTop = e.y;
-    // }
-    // public aline(isUp?: boolean) {
-    //     let arr = this.blockItem.toArray();
-    //     if (this.param.renderTimmer !== null) {
-    //         return;
-    //     }
-    //     if (arr.length === 0) {
-    //         // this.findPreData();
-    //     }
-    //     if (arr.length < this.param.length) {
-    //         return;
-    //     }
-    //     let overTop = { index: null, height: 0, length: 0, stopH: 0, kuxIndex: 0 },
-    //         overBottom = { index: null, height: 0, length: 0, stopH: 0, kuxIndex: 0 },
-    //         needNext = false,
-    //         needPre = false,
-    //         length = arr.length;
-    //     let recordOverTop = true;
-    //     let recordOverBottom = false;
-    //     for (let i = 0; i < length; i++) {
-    //         let innerH = 0, item = arr[i];
-    //         innerH += item.height;
-    //         if (recordOverTop) { overTop.height += item.height; overTop.length++ }
-    //         if (i % this.param.length === 0) {
-    //             innerH = 0;
-    //             let pieceFirst = arr[i],
-    //                 pieceLast = arr[i + this.param.length - 1];
-    //             if (i == 0) {
-    //                 if (pieceFirst.el.offsetTop > this.kuxScrollbar.scrollTop - this.kuxScrollbar.boxHeight * 0.1) {
-    //                     needPre = true;
-    //                 }
-    //             }
-    //             if (i == 0 && pieceFirst && pieceFirst.el.offsetTop > this.kuxScrollbar.scrollTop - this.kuxScrollbar.boxHeight * 0.1) { needPre = true; }
-    //             if (pieceLast && pieceLast.el.offsetTop < this.kuxScrollbar.scrollTop + this.kuxScrollbar.boxHeight * 1.1) { needNext = true } else { needNext = false }
-    //             if (pieceLast && pieceLast.el.offsetTop < this.kuxScrollbar.scrollTop - this.kuxScrollbar.boxHeight * 0.2) {
-    //                 overTop.index = i;
-    //                 overTop.stopH = item.height;
-    //                 overTop.kuxIndex = pieceLast.item._kuxindex + 1;
-    //             } else {
-    //                 recordOverTop = false;
-    //             }
-    //             if (pieceFirst && pieceFirst.el.offsetTop > this.kuxScrollbar.scrollTop + this.kuxScrollbar.boxHeight * 1.2) {
-    //                 recordOverBottom = true;
-    //                 overBottom.index = i;
-    //                 overBottom.kuxIndex = pieceFirst.item._kuxindex + 1;
-    //             }
-
-    //         }
-    //         if (recordOverBottom) { overBottom.height += item.height; overBottom.length++; }
-    //     }
-    //     if (needNext) {
-    //         this.findNextData();
-    //     }
-    //     if (needPre) {
-    //         this.findPreData();
-    //     }
-    //     if (overBottom.index !== null) {
-    //         this.param.bottomIndex = overBottom.kuxIndex;
-    //         let del = this.display.splice(overBottom.index);
-    //     }
-
-    //     if (overTop.index !== null) {
-    //         let h = overTop.height - overTop.stopH;
-    //         this.topHolderHeight += (overTop.height - overTop.stopH)
-    //         this.param.topIndex = overTop.kuxIndex;
-    //         let del = this.display.splice(0, overTop.length - 1);
-    //     }
-
-    // }
-    // private broken() {
-    //     let end = Math.round(this.param.bottomIndex / 5) * 5;
-    //     for (let i = end; i >= 0; i--) {
-    //         if (i % this.param.length === 0) {
-
-    //         }
-    //     }
-    // }
-    // private findPreData() {
-    //     let newItem = <any[]>this.getData(this.param.topIndex - this.param.length, this.param.length);
-    //     let h = 0;
-    //     newItem.forEach((item) => {
-    //         h += this.param.itemHeightMapCache[item._kuxindex] || 0;
-    //     })
-    //     this.display.unshift.apply(this.display, newItem);
-    //     this.topHolderHeight -= h;
-    //     this.param.topIndex -= this.param.length;
-    // }
-    // private findNextData() {
-    //     let newItem = <any[] | Promise<any>>this.getData(this.param.bottomIndex, this.param.length);
-    //     if (newItem instanceof Array) {
-    //         this.display.push.apply(this.display, this.addKuXIndex(newItem));
-    //         this.param.bottomIndex += this.param.length;
-    //         this.param.bottomIndex = this.param.bottomIndex;
-    //     } else if (newItem instanceof Promise) {
-    //         newItem.then((data: any[]) => {
-    //             this.display.push.apply(this.display, this.addKuXIndex(newItem));
-    //             this.param.bottomIndex += this.param.length;
-    //             this.param.bottomIndex = this.param.bottomIndex;
-    //         })
-    //     }
-    // }
-    // public renderFinish(index, height?: number) {
-    //     if (height !== undefined) {
-    //         this.param.itemHeightMapCache[index] = height;
-    //     }
-    //     if (this.param.renderTimmer !== null) {
-    //         clearTimeout(this.param.renderTimmer);
-    //         this.param.renderTimmer = setTimeout(() => {
-    //             this.kuxScrollbar.refresh(true).then(() => {
-    //                 this.param.renderTimmer = null;
-    //                 this.aline();
-    //             })
-    //         })
-    //     } else {
-    //         this.param.renderTimmer = setTimeout(() => {
-    //             this.kuxScrollbar.refresh(true).then(() => {
-    //                 this.param.renderTimmer = null;
-    //                 this.aline();
-    //             })
-    //         })
-    //     }
-    // }
-
-
-    // private addKuXIndex(arr) {
-    //     arr.map((item, index) => {
-    //         item._kuxindex = this.param.bottomIndex + index;
-    //     });
-    //     return arr;
-    // }
 
     stopWheel(e: MouseEvent) {
         if (!(this.isTop || this.isBottom)) {

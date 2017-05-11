@@ -150,7 +150,7 @@ step|Number|3|3-pickday 2-pickmonth 1-pickyear
 ### infinite scroll component
 #### In NgModule
 ```typescript
-import { KuxScrollModule } from '../../ng-kux/scroll'
+import { KuxScrollModule } from 'ng-kux/scroll'
 ...
 
 @NgModule({
@@ -195,7 +195,7 @@ export class SomeComponent implements OnInit {
 ```html
 <kux-scroll>
     <ul>
-    <li *ngFor="let item of kuxScroll.displayD" kux-scroll-item>{{item.name}}</li>
+    <li *ngFor="let item of kuxScroll.displayD" [kux-scroll-item]="item">{{item.name}}</li>
     </ul>
 </kux-scroll>
 ```
