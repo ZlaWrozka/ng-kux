@@ -34,7 +34,6 @@ export class ScrollComponent implements OnInit {
       }
       return list
     }
-
   }
 
 }

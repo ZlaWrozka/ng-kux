@@ -22,7 +22,7 @@ interface BarXAttr {
  */
 @Component({
   selector: 'kux-scrollbar-y',
-  template: `<div class="kux-scrollbar-y" [ngStyle]="attr.style" *ngIf="attr.show" (click)="stopEvent($event)"></div>`,
+  template: `<div class="kux-scrollbar-y" [ngStyle]="attr.style" (click)="stopEvent($event)"></div>`,
   styles: [
     `
     :host{
@@ -118,7 +118,7 @@ export class ScrollBarY implements AfterViewInit {
  */
 @Component({
   selector: 'kux-scrollbar-x',
-  template: `<div class="kux-scrollbar-x" [ngStyle]="attr.style" *ngIf="attr.show" (click)="stopEvent($event)"></div>`,
+  template: `<div class="kux-scrollbar-x" [ngStyle]="attr.style"  (click)="stopEvent($event)"></div>`,
   styles: [
     `
     :host{
@@ -249,8 +249,8 @@ export class ScrollbarContent {
         <ng-content></ng-content> 
       </kux-scrollbar-content>
     </div>
-    <kux-scrollbar-y [attr]="barYAttr" (onDrag)="dragScrollY($event)" (onJump)="jumpY($event)" [autoHide]="autoHide"></kux-scrollbar-y>
-    <kux-scrollbar-x [attr]="barXAttr" (onDrag)="dragScrollX($event)" (onJump)="jumpX($event)" [autoHide]="autoHide"></kux-scrollbar-x>
+    <ng-template [ngIf]="barYAttr.show"><kux-scrollbar-y [attr]="barYAttr" (onDrag)="dragScrollY($event)" (onJump)="jumpY($event)" [autoHide]="autoHide"></kux-scrollbar-y></ng-template>
+    <ng-template [ngIf]="barXAttr.show"><kux-scrollbar-x [attr]="barXAttr" (onDrag)="dragScrollX($event)" (onJump)="jumpX($event)" [autoHide]="autoHide"></kux-scrollbar-x></ng-template>
   `,
   styleUrls: ['./scrollbar.component.css'],
   host: {

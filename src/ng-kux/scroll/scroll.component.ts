@@ -36,6 +36,15 @@ export class KuxScrollComponent implements AfterViewInit {
         direction: 1,
         tmpHeightMap: {}
     }
+    public sync() {
+        let begin = (this.param.begin+1)*this.param.length,length =this.param.end- begin ;
+        let newItems=this.getData(begin,length);
+        newItems.map((item,index)=>{
+            item.$kuxindex = begin+index;
+        });
+        this.display = newItems;
+        this.kuxScrollbar.refresh();
+    }
     public direction = 1;
     private scrolling = false;
     constructor(
