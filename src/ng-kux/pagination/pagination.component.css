@@ -1,0 +1,128 @@
+.pagination {
+    margin: 0;
+    -moz-user-select: -moz-none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    display: inline-block;
+}
+
+.pagination>li {
+    display: inline-block;
+}
+
+.pagination>li {
+    margin: 0 2.5px;
+}
+
+.pagination>li>a {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    font-size: 12px;
+    height: 30px;
+    padding: 0;
+    text-align: center;
+    width: 30px;
+    margin-left: -1px;
+    line-height: 30px;
+    color: #666;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #e6e6e6;
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+.pagination>li>a.number-page {
+    line-height: 33px;
+}
+
+.pagination>li>a.width-page {
+    width: 60px;
+}
+
+.pagination>li>a.per-page, .pagination>li>a.next-page {
+    width: 45px;
+}
+
+.pagination>li.dot-dot>a {
+    background: none;
+    border: none;
+}
+
+.pagination>li.dot-dot>a:after, .pagination>li.dot-dot>a:before, .pagination>li.dot-dot>a>i:after {
+    content: "";
+    width: 2px;
+    height: 2px;
+    position: absolute;
+    background-color: #666;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.pagination>li.dot-dot>a:before {
+    right: 10px;
+}
+
+.pagination>li.dot-dot>a:after {
+    left: 10px;
+}
+
+.pagination>li>a:hover {
+    color: #333;
+    background-color: #fff;
+    border-color: #b3b3b3;
+}
+
+.pagination>li.dot-dot>a:hover {
+    background: none;
+    border: none;
+}
+
+.pagination>li>a.disable {
+    color: #d0d0d0 !important;
+    cursor: not-allowed !important;
+    background-color: #fff !important;
+    border-color: #e6e6e6 !important;
+}
+
+.pagination>li>a.active {
+    z-index: 2;
+    color: #fff;
+    cursor: default;
+    background-color: #999999;
+    border-color: #999999;
+}
+
+.pagination>li.jump-page {
+    position: relative;
+    width: 100px;
+    height: 32px;
+    margin-left: 7.5px;
+    text-align: left;
+}
+
+.pagination>li.jump-page input {
+    position: absolute;
+    outline: none;
+    top: 0px;
+    height: 30px;
+    line-height: 30px;
+    border: #e6e6e6 solid 1px;
+    background-color: #f7f7f7;
+    width: 48px;
+    font-size: 12px;
+    text-indent: 12px;
+}
+
+.pagination>li.jump-page>a {
+    width: 45px;
+    margin-left: 55.5px;
+}

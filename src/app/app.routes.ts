@@ -17,6 +17,9 @@ const APP_ROUTES: Routes = [
       },{
         path:'scroll',
         loadChildren:'./scroll#ScrollModule'
+      },{
+        path:'pagination',
+        loadChildren:'./pagination#PaginationModule'
       }, {
         path: '**',
         redirectTo: 'select'
