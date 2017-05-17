@@ -37,10 +37,10 @@ export class KuxScrollComponent implements AfterViewInit {
         tmpHeightMap: {}
     }
     public sync() {
-        let begin = (this.param.begin+1)*this.param.length,length =this.param.end- begin ;
-        let newItems=this.getData(begin,length);
-        newItems.map((item,index)=>{
-            item.$kuxindex = begin+index;
+        let begin = (this.param.begin + 1) * this.param.length, length = this.param.end - begin;
+        let newItems = this.getData(begin, length);
+        newItems.map((item, index) => {
+            item.$kuxindex = begin + index;
         });
         this.display = newItems;
         this.kuxScrollbar.refresh();
@@ -182,12 +182,20 @@ export class KuxScrollComponent implements AfterViewInit {
             let newItem = <any[] | Promise<any>>this.getData(this.param.end, this.param.length);
             if (newItem instanceof Array) {
                 this.isBottom = newItem.length == 0 ? true : false;
+                if (this.isBottom) {
+                    resolve()
+                    return;
+                }
                 this.display.push.apply(this.display, this.addKuXIndex(newItem));
                 this.param.end += this.param.length;
                 resolve()
             } else if (newItem instanceof Promise) {
                 newItem.then((data: any[]) => {
                     this.isBottom = data.length == 0 ? true : false;
+                    if (this.isBottom) {
+                        resolve()
+                        return;
+                    }
                     this.display.push.apply(this.display, this.addKuXIndex(newItem));
                     this.param.end += this.param.length;
                     resolve();

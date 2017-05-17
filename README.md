@@ -117,8 +117,8 @@ export class ParentComponent implements  AfterViewInit {
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { KuxDatepickerModule } from 'ng-kux';
 @NgModule({
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     KuxDatepickerModule
     ,...
   ],
