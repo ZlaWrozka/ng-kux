@@ -1,7 +1,7 @@
 {
   "name": "ng-kux",
-  "version": "1.0.0-alpha.20",
-  "description": "angular4+ Component",
+  "version": "1.0.0-alpha.22",
+  "description": "Angular Component For ng4.  select,scrollbar,datepicker,Infinite Scroll,Pagination",
   "files": [
     "dist",
     "index.ts",

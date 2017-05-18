@@ -36,16 +36,32 @@ export class KuxScrollComponent implements AfterViewInit {
         recordItemNum: {}
     }
     public sync() {
-        let begin = (this.param.begin + 1) * this.param.length, length = this.param.end - begin;
-        let newItems = this.getData(begin, length);
-        newItems.map((item, index) => {
-            item.$kuxindex = begin + index;
-        });
-        this.display = newItems;
-        this.kuxScrollbar.refresh();
+        return new Promise((resolve, reject) => {
+            let begin = (this.param.begin + 1) * this.param.length, length = this.param.end - begin;
+            let newItems = this.getData(begin, length);
+            newItems.map((item, index) => {
+                item.$kuxindex = begin + index;
+            });
+            let d = length - newItems.length;
+            this.param.end -= d;
+            this.display = newItems;
+            this.param.scrolledTop--;
+            this.scrollTopList.push(this.kuxScrollbar.scrollTop);
+            this.checkScrollTopList();
+            this.kuxScrollbar.refresh(true).then(() => {
+                this.param.scrolledTop++;
+                this.scrollTopList.push(this.kuxScrollbar.scrollTop);
+                this.checkScrollTopList();
+                this.delPreData(this.kuxScrollbar.scrollTop);
+                this.kuxScrollbar.refresh(true).then(() => {
+                    resolve();
+                })
+            })
+        })
     }
     public direction = 1;
     private scrolling = false;
+    private timmer: number = 0;
     constructor(
         el: ElementRef
     ) {
@@ -76,6 +92,11 @@ export class KuxScrollComponent implements AfterViewInit {
             }
             this.param.scrolledTop = s;
             this.scrollTopList.length = 0;
+        } else {
+            clearTimeout(this.timmer)
+            this.timmer = setTimeout(() => {
+                this.checkScrollTopList();
+            })
         }
     }
     public aline(scrollTop) {
@@ -97,11 +118,11 @@ export class KuxScrollComponent implements AfterViewInit {
             this.display.unshift.apply(this.display, preData);
             this.topHolderHeight = this.param.index2height[_begin * this.param.length] || 0;
             let pass = true;
+            let orgL = this.display.length;
             this.display = this.display.filter((item) => {
                 if (item.$kuxindex % this.param.length === 0) {
                     let index = item.$kuxindex - this.param.length
                     let t = this.param.index2height[index] || 0;
-                    this.param.end = index + this.param.length
                     if (t < this.kuxScrollbar.scrollTop + this.kuxScrollbar.boxHeight * 1.2) {
                         return true;
                     } else {
@@ -112,6 +133,7 @@ export class KuxScrollComponent implements AfterViewInit {
                     return pass;
                 }
             });
+            this.param.end -= (orgL - this.display.length)
             this.kuxScrollbar.refresh(true).then(() => {
                 this.param.begin = _begin;
                 this.scrolling = false
@@ -137,7 +159,7 @@ export class KuxScrollComponent implements AfterViewInit {
     //向后填充直到填满
     private fillNext() {
         if (this.param.direction == 1) {
-            let last = this.blockItem.last; 
+            let last = this.blockItem.last;
             if (last && last.el.offsetTop + last.height >= this.kuxScrollbar.scrollTop + this.kuxScrollbar.boxHeight * 1.2) {
                 this.scrolling = false;
                 return;
@@ -152,6 +174,9 @@ export class KuxScrollComponent implements AfterViewInit {
                         this.scrolling = false
                     }
                 })
+            }, () => {
+                this.scrolling = false;
+                this.param.direction = -1;
             });
         }
     }
@@ -188,21 +213,21 @@ export class KuxScrollComponent implements AfterViewInit {
             if (newItem instanceof Array) {
                 this.isBottom = newItem.length == 0 ? true : false;
                 if (this.isBottom) {
-                    resolve()
+                    reject(true)
                     return;
                 }
                 this.display.push.apply(this.display, this.addKuXIndex(newItem));
-                this.param.end += this.param.length;
+                this.param.end += newItem.length;
                 resolve()
             } else if (newItem instanceof Promise) {
                 newItem.then((data: any[]) => {
                     this.isBottom = data.length == 0 ? true : false;
                     if (this.isBottom) {
-                        resolve()
+                        reject(true)
                         return;
                     }
                     this.display.push.apply(this.display, this.addKuXIndex(newItem));
-                    this.param.end += this.param.length;
+                    this.param.end += data.length;
                     resolve();
                 })
             }

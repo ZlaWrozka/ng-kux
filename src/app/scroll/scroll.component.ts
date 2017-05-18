@@ -9,7 +9,7 @@ export class ScrollComponent implements OnInit {
   private AllData: any = [];
   constructor(
   ) {
-    for (let i = 0; i <= 30000; i++) {
+    for (let i = 0; i <= 1002; i++) {
       this.AllData.push({
         id: i,
         name: `number:${i}`

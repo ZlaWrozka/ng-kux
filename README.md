@@ -150,7 +150,7 @@ step|Number|3|3-pickday 2-pickmonth 1-pickyear
 ### infinite scroll component
 #### In NgModule
 ```typescript
-import { KuxScrollModule } from 'ng-kux/scroll'
+import { KuxScrollModule } from 'ng-kux'
 ...
 
 @NgModule({
@@ -174,6 +174,11 @@ import { KuxScrollComponent } from 'ng-kux/scroll/scroll.component';
 export class SomeComponent implements OnInit {
     @ViewChild(KuxScrollComponent) kuxScroll: KuxScrollComponent;
     private AllData:any[] //some big Array
+    sync(){
+        this.kuxScroll.sync().then(() => {  //synchronize the arr of kuxScroll from AllData
+           ...
+        })
+    }
     ngOnInit() {
         let num = 0;
         this.kuxScroll.getData = (begin, length) => {
@@ -199,3 +204,31 @@ export class SomeComponent implements OnInit {
     </ul>
 </kux-scroll>
 ```
+
+
+---
+## Pagination
+#### In NgModule
+```typescript
+import { KuxPaginationModule } from 'ng-kux';
+@NgModule({
+  imports: [
+    CommonModule,
+    KuxPaginationModule,
+    ....
+  ],
+  declarations: [...]
+})
+export class SomeModule { }
+```
+#### In Component Template
+```html
+<kux-pagination [total]="total" [limit]=50 [page]=0 [max]=5 (onPage)="showEvent($event)"></kux-pagination>
+```
+#### Optional Parameters
+Param    | Type   | Default    | description|
+---------|--------|------------|-----------------------------
+total    | number | 0          | Total number of items
+limit    | number | 0          | Limit number for pagination size
+page     | number | 0          | Current page number (First Page :0)
+max      | number | 7          | Ellipses
