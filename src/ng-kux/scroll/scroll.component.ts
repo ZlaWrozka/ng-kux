@@ -28,13 +28,12 @@ export class KuxScrollComponent implements AfterViewInit {
     private param = {
         length: 5,            //每片数据长度         
         index2height: {},
-        point2index: {},
         heightPoints: [],
         begin: -1,
         end: 0,
         scrolledTop: -1,
         direction: 1,
-        tmpHeightMap: {}
+        recordItemNum: {}
     }
     public sync() {
         let begin = (this.param.begin + 1) * this.param.length, length = this.param.end - begin;
@@ -87,6 +86,7 @@ export class KuxScrollComponent implements AfterViewInit {
             this.getPreData(scrollTop);
         }
     }
+    //向上滚动加载数据
     private getPreData(scrollTop) {
         let _begin = this.findFallPoint(scrollTop);
         if (_begin < this.param.begin) {
@@ -122,6 +122,7 @@ export class KuxScrollComponent implements AfterViewInit {
             this.scrolling = false
         }
     }
+    //把前面看不见的删了
     private delPreData(scrollTop) {
         let _begin = this.findFallPoint(scrollTop);
         if (_begin > this.param.begin) {
@@ -133,16 +134,17 @@ export class KuxScrollComponent implements AfterViewInit {
             this.topHolderHeight = this.param.index2height[_begin * this.param.length]
         }
     }
+    //向后填充直到填满
     private fillNext() {
         if (this.param.direction == 1) {
-            let last = this.blockItem.last; last = this.blockItem.last;
+            let last = this.blockItem.last; 
             if (last && last.el.offsetTop + last.height >= this.kuxScrollbar.scrollTop + this.kuxScrollbar.boxHeight * 1.2) {
                 this.scrolling = false;
                 return;
             }
             this.findNextData().then(() => {
                 this.kuxScrollbar.refresh(true).then(() => {
-                    let last = this.blockItem.last; last = this.blockItem.last
+                    let last = this.blockItem.last;
                     if (last.el.offsetTop + last.height <= this.kuxScrollbar.scrollTop + this.kuxScrollbar.boxHeight * 1.2) {
                         this.fillNext();
                     } else {
@@ -153,6 +155,7 @@ export class KuxScrollComponent implements AfterViewInit {
             });
         }
     }
+    //寻找落点
     private findFallPoint(scrollTop) {
         let _begin = scrollTop - this.kuxScrollbar.boxHeight * 0.1;
         if (_begin < 0) {
@@ -161,6 +164,7 @@ export class KuxScrollComponent implements AfterViewInit {
             return this.binary(this.param.heightPoints, scrollTop)
         }
     }
+    //二分查找-有改
     private binary(array, value) {
         var high = array.length - 1,
             low = 0;
@@ -177,6 +181,7 @@ export class KuxScrollComponent implements AfterViewInit {
         }
         return Math.min(low, high);
     }
+    //加载数据
     private findNextData() {
         return new Promise((resolve, reject) => {
             let newItem = <any[] | Promise<any>>this.getData(this.param.end, this.param.length);
@@ -204,36 +209,38 @@ export class KuxScrollComponent implements AfterViewInit {
         })
 
     }
+    //每条记录加上我的索引值
     private addKuXIndex(arr) {
         arr.map((item, index) => {
             item.$kuxindex = this.param.end + index;
         });
         return arr;
     }
-
+    //每条记录init后告诉我它高度
     public addPoint(index, height) {
-        this.param.tmpHeightMap[index] = height;
-        if ((index + 1) % this.param.length !== 0) {
+        let _index = Math.floor(index / this.param.length), __index = _index * this.param.length;
+        let n = this.param.recordItemNum[_index] || 0;
+        if (n >= this.param.length) {
             return;
         }
-        let _index = index + 1 - this.param.length
-
-        let h = 0, pre = 0;
-
-        if (this.param.index2height[_index] == undefined) {
-            if (_index !== 0) {
-                pre = this.param.heightPoints[this.param.point2index[_index - this.param.length]];
+        n++;
+        this.param.recordItemNum[_index] = n;
+        let preH = this.param.index2height[__index - this.param.length] || 0;
+        if (this.param.index2height[__index] === undefined) {
+            this.param.index2height[__index] = preH + height;
+            this.param.heightPoints[_index] = preH + height;
+        } else {
+            this.param.index2height[__index] += height;
+            this.param.heightPoints[_index] += height;
+        }
+        let l = this.param.heightPoints.length;
+        if (_index + 1 < l) {
+            for (let i = _index + 1; i < l; i++) {
+                this.param.heightPoints[i] += height;
+                this.param.index2height[i * this.param.length] = (this.param.index2height[i * this.param.length] || 0) + height
             }
-            for (let i = index; i > index - this.param.length; i--) {
-                h += this.param.tmpHeightMap[i] || 0;
-            }
-            h += pre;
-            this.param.heightPoints.push(h);
-            this.param.index2height[_index] = h
-            this.param.point2index[_index] = this.param.heightPoints.length - 1;
         }
     }
-
     stopWheel(e: MouseEvent) {
         if (!(this.isTop || this.isBottom)) {
             e.stopPropagation();
