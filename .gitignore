@@ -1,6 +1,7 @@
 logs
 *.log
 .DS_Store
+/demo/
 /node_modules/
 npm-debug.log
 /npm-debug.log.*

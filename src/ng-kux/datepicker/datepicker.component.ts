@@ -1,4 +1,4 @@
-import { Component, Directive, OnInit, Input, Output, Self, Pipe, PipeTransform, EventEmitter, ElementRef, ViewChild } from '@angular/core';
+import { Component, Directive, OnInit, Input, Output, Self, Pipe, PipeTransform, EventEmitter, ElementRef, ViewChild,AfterViewInit } from '@angular/core';
 import { NgModel, ControlValueAccessor } from '@angular/forms';
 import { KuxDatepickerPanelService } from './KuxDatepickerPanel.service';
 import { KuxDatepickerFormServiceService } from './KuxDatepickerForm.service'
@@ -36,10 +36,12 @@ export class kuxDatepickerBtn {
         border: #d3d3d3 solid 1px;
         border-radius: 4px;
         background: #fff;
-        outline:none;
+        outline:none !important;
         width:120px;
       }
-
+      .kux-datepicker-input::-moz-focus-inner {
+        border: 0;
+      }
       :host.disabled >>> .kux-datepicker-input
       {
           background-color: #f1f1f1;
@@ -53,7 +55,7 @@ export class kuxDatepickerBtn {
     '[class]': 'disabled?"disabled":""'
   },
 })
-export class KuxDatepickerComponent implements OnInit {
+export class KuxDatepickerComponent implements OnInit,AfterViewInit {
   public value: any;
   @Input() public min: Date;
   @Input() public max: Date;
@@ -92,6 +94,7 @@ export class KuxDatepickerComponent implements OnInit {
   open() {
     if (!this.disabled) {
       this.isOpen = this.isOpen && this.selecting ? false : true;
+      this.btn.focus();
     }
   }
   tryToClose() {
@@ -109,6 +112,9 @@ export class KuxDatepickerComponent implements OnInit {
   }
   ngOnInit() {
     this.service.placement = this.placement;
+  }
+  ngAfterViewInit(){
+   
   }
   writeValue(v: any) {
     if (v !== this.value && v instanceof Date) {

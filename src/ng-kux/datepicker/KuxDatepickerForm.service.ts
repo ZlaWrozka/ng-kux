@@ -18,11 +18,11 @@ export class KuxDatepickerFormServiceService {
         this.creatStyle(h, size)
     }
     creatStyle(h: number, size: any) {
-        this.data.position.top = size.h + 4 + 'px';
+        this.data.position.top = size.h +1+ 'px';
         this.data.position.left = '0px';
         if (this.placement instanceof Array) {
             if (this.placement.indexOf('top') !== -1) {
-                this.data.position.top = -h - 4 + 'px';
+                this.data.position.top = -h + 'px';
             }
             if (this.placement.indexOf('center') !== -1) {
                 this.data.position.left = size.w / 2 - 240 / 2 + 'px'
@@ -36,7 +36,7 @@ export class KuxDatepickerFormServiceService {
                     this.data.position.left = size.w / 2 - 240 / 2 + 'px'
                     break;
                 case 'top':
-                    this.data.position.top = -h - 4 + 'px';
+                    this.data.position.top = -h + 'px';
                     break;
                 case 'right':
                     this.data.position.left = size.w - 240 + 'px';
