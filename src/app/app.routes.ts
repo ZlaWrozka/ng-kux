@@ -20,6 +20,9 @@ const APP_ROUTES: Routes = [
       },{
         path:'pagination',
         loadChildren:'./pagination#PaginationModule'
+      },{
+        path:'timepicker',
+        loadChildren:'./timepicker#TimepickerModule'
       }, {
         path: '**',
         redirectTo: 'select'

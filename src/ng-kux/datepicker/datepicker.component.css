@@ -188,34 +188,8 @@
     color:#999;
     display: inline-block;
     margin-top: 1px;
-    /*position: absolute;
-    left: 11px;
-
-    display: block;
-
-    width: 8px;
-    height: 1px;
-
-    content: '';
-
-    background-color: #999;*/
 }
 
-/*.kux-arrow-left:before,
-.kux-arrow-right:before
-{
-    top: 12px;
-
-    transform: rotate(-45deg);
-}
-
-.kux-arrow-left:after,
-.kux-arrow-right:after
-{
-    top: 18px;
-
-    transform: rotate(45deg);
-}*/
 
 
 

@@ -1,0 +1,140 @@
+.kux-timepicker-btn
+{
+    height: 28px;
+    padding-left: 10px;
+
+    cursor: pointer;
+    text-align: left;
+
+    color: #333;
+    border: #d3d3d3 solid 1px;
+    border-radius: 4px;
+    outline: none ;
+    background: #fff;
+}
+
+.kux-timepicker-btn::-moz-focus-inner
+{
+    border: 0;
+}
+.kux-timepicker-panel
+{
+    position: relative;
+    z-index: 1000;
+
+    overflow: hidden;
+
+    padding: 4px;
+
+    user-select: none;
+
+    color: #333;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, .19);
+}
+.kux-timepicker-time-line,
+.kux-timepicker-point-line
+{
+    float: left;
+    overflow: hidden;
+
+    width: 32px;
+
+    list-style: none;
+}
+.kux-timepicker-time-line:first-child,
+.kux-timepicker-time-line:nth-child(3)
+{
+    margin-right: 4px;
+}
+.kux-timepicker-time-line:last-child
+{
+    margin-right: 0;
+}
+.kux-timepicker-point-line
+{
+    line-height: 25px;
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 36px;
+
+    width: 4px;
+    height: 25px;
+    margin: auto;
+
+    cursor: default;
+}
+.kux-timepicker-point-line:nth-child(4)
+{
+    left: 72px;
+}
+.kux-timepicker-time-line > div
+{
+    font-size: 12px;
+    line-height: 25px;
+
+    position: relative;
+
+    float: left;
+
+    width: 32px;
+    height: 25px;
+    margin: 1px 0;
+
+    cursor: pointer;
+    text-align: center;
+
+    border-radius: 4px;
+}
+.kux-timepicker-time-line > div:hover
+{
+    background-color: #f7f7f7;
+}
+.kux-timepicker-time-line > div.current
+{
+    color: #fff;
+    background-color: #289bf0;
+}
+.kux-timepicker-time-line > div.up:before,
+.kux-timepicker-time-line > div.up:after,
+.kux-timepicker-time-line > div.down:before,
+.kux-timepicker-time-line > div.down:after
+{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+
+    width: 8px;
+    height: 2px;
+    margin: auto;
+
+    content: '';
+
+    background: #999;
+}
+.kux-timepicker-time-line > div.up:before
+{
+    left: 9px;
+
+    transform: rotate(150deg);
+}
+.kux-timepicker-time-line > div.down:before
+{
+    left: 9px;
+
+    transform: rotate(30deg);
+}
+.kux-timepicker-time-line > div.up:after{
+        right: 9px;
+
+    transform: rotate(30deg);
+}
+.kux-timepicker-time-line > div.down:after
+{
+    right: 9px;
+
+    transform: rotate(-30deg);
+}

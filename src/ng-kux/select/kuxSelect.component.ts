@@ -1,7 +1,7 @@
 import { Component, Directive, Self, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, HostBinding } from '@angular/core';
 import { NgModel, ControlValueAccessor } from '@angular/forms';
 import { KuXSelectOption } from './index';
-import { fadeInOut } from '../animate'
+import { fadeInOut } from '../animate';
 @Directive({
   selector: '[kux-select-btn]'
 })
@@ -43,7 +43,7 @@ export class KuxSelectComponent implements OnInit {
   @Output() private valueChange: EventEmitter<any> = new EventEmitter();
   private optionsMapping: any;                   //选项mapping
   public selected: KuXSelectOption;
-  private value: any;
+  public value: any;
   public isOpen: boolean = false;                //是否显示选项
   private selecting: boolean = false
   private onChange = (_: any) => { };
@@ -62,6 +62,7 @@ export class KuxSelectComponent implements OnInit {
   open() {
     if (!this.disabled) {
       this.isOpen = this.isOpen && this.selecting ? false : true;
+      this.btn.focus();
     }
   }
   tryToClose() {
@@ -181,7 +182,7 @@ export class KuXSelectOpt implements OnInit {
     this.oncheck.emit(opt);
   }
   ngOnInit() {
-    this.ulStyle.width=this.style.width=this.width;
+    this.ulStyle.width = this.style.width = this.width;
     if (this.maxHeight !== undefined) {
       this.style.height = this.maxHeight;
     }
