@@ -5,7 +5,10 @@ export class UtilService {
 
     constructor() { }
     dateFormat(d: Date, fmt) {
-        if (d instanceof Date) {
+        if (Object.prototype.toString.call(d) === "[object Date]") {
+            if (isNaN(d.getTime())) {
+                return null;
+            }
             var o = {
                 "M+": d.getMonth() + 1, //month
                 "d+": d.getDate(), //day
@@ -22,6 +25,5 @@ export class UtilService {
         } else {
             return null;
         }
-
     }
 }

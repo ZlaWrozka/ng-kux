@@ -1,4 +1,4 @@
-import { Component, Directive, ElementRef, OnInit, Input, Self, Output, EventEmitter, Pipe, PipeTransform, ViewChild } from '@angular/core';
+import { Component, Directive, ElementRef, OnInit, Input, Self, Output, EventEmitter, Pipe, PipeTransform, ViewChild, AfterViewChecked } from '@angular/core';
 import { NgModel, ControlValueAccessor } from '@angular/forms';
 import { kuxDataFormat } from '../datepicker/datepicker.component'
 import { fadeInOut } from '../animate';
@@ -21,7 +21,7 @@ export class kuxTimepickerBtn {
   selector: 'kux-timepicker[ngModel]',
   animations: [fadeInOut],
   template: `
-    <button class="kux-timepicker-btn" kux-timepicker-btn (click)="open()" (blur)="tryToClose()">{{_value|kuxDataFormat:fmt}}</button>
+    <button class="kux-timepicker-btn" kux-timepicker-btn (click)="open()" (blur)="tryToClose()">{{(value|kuxDataFormat:fmt)||defStr}}</button>
     <div class="kux-timepicker-panel" (click)="setSelecting()" [@fadeInOut]="'in'" *ngIf="isOpen"  (mouseenter)="setSelecting()" (mouseleave)="mouseOut()">
       <ul>
           <li class="kux-timepicker-time-line">
@@ -62,8 +62,8 @@ export class KuxTimepickerComponent implements OnInit {
   public isOpen: boolean = false;                                              //是否显示选项
   private onChange = (_: any) => { };
   private onTouched = () => { };
-  private value: Date;
-  public _value: Date;
+  public value: Date;
+  public defStr: String;
   private selecting: boolean = false;
   private list24 = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"]
   private list60 = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59"];
@@ -144,7 +144,8 @@ export class KuxTimepickerComponent implements OnInit {
   }
   jump(n: string | number, unit: number) {
     n = +n;
-    let year = this._value.getFullYear(), month = this._value.getMonth(), day = this._value.getDate(), hour = this._value.getHours(), minutes = this._value.getMinutes(), second = this._value.getSeconds(), millisecond = this._value.getMilliseconds();
+    let value = this.value || new Date('1970/1/1 00:00:00')
+    let year = value.getFullYear(), month = value.getMonth(), day = value.getDate(), hour = value.getHours(), minutes = value.getMinutes(), second = value.getSeconds(), millisecond = value.getMilliseconds();
     switch (unit) {
       case 0:
         this.sync(new Date(year, month, day, n, minutes, second, millisecond));
@@ -166,8 +167,10 @@ export class KuxTimepickerComponent implements OnInit {
   open() {
     if (!this.disabled) {
       this.isOpen = this.isOpen && this.selecting ? false : true;
-      if (this._value instanceof Date) {
-        this.sync(this._value);
+      if (this.value instanceof Date && isNaN(this.value.getTime()) == false) {
+        this.sync(this.value);
+      } else {
+        this.sync(new Date('1970/1/1 00:00:00'));
       }
     }
   }
@@ -187,7 +190,8 @@ export class KuxTimepickerComponent implements OnInit {
         return { n: _s, cur: +_s == s };
       })
     }
-    this._value = d
+    this.valueChange.emit(d)
+    this.value = d;
   }
   fillList(n, l) {
     let all = l == 24 ? this.list24 : this.list60;
@@ -213,14 +217,15 @@ export class KuxTimepickerComponent implements OnInit {
     }
     if (mat[3] === undefined) {
       this.haveSecond = false;
+      this.defStr = '--:--'
     } else {
       this.haveSecond = true;
+      this.defStr = '--:--:--'
     }
   }
   writeValue(v: any) {
-    if (v !== this.value) {
+    if (v !== this.value && v !== null && v !== undefined) {
       this.value = v;
-      this._value = v;
     }
   }
   registerOnChange(fn: (_: any) => void): void {

@@ -12,4 +12,7 @@ export { KuxScrollComponent } from './dist/scroll/scroll.component';
 export { KuxScrollItemDirective } from './dist/scroll/scroll.directive';
 
 export { KuxPaginationModule } from './dist/pagination';
-export { KuxPaginationComponent } from './dist/pagination/pagination.component'
+export { KuxPaginationComponent } from './dist/pagination/pagination.component';
+
+export { KuxTimepickerModule } from './dist/timepicker';
+export { KuxTimepickerComponent } from './dist/timepicker/timepicker.component'
