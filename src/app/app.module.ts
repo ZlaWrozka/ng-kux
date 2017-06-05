@@ -18,9 +18,12 @@ import {
 
 
 import { ENV_PROVIDERS } from './environment';
+import { KuxModalModule } from '../ng-kux/modal'
 import { AppComponent, AppRouteComponent } from './app.component';
 import { AppRoutingModule } from './app.routes';
 import { AppState, InternalStateType } from './app.service';
+
+import { DialogComponent } from './modal/dialog/dialog.component';
 // Application wide providers
 const APP_PROVIDERS = [
   AppState
@@ -35,6 +38,7 @@ type StoreType = {
 @NgModule({
   bootstrap: [AppComponent],
   declarations: [
+    DialogComponent,
     AppComponent,
     AppRouteComponent
   ],
@@ -43,11 +47,15 @@ type StoreType = {
     BrowserAnimationsModule,
     FormsModule,
     HttpModule,
+    KuxModalModule,
     AppRoutingModule
   ],
   providers: [
     ENV_PROVIDERS,
     APP_PROVIDERS
+  ],
+  entryComponents: [
+    DialogComponent
   ]
 })
 export class AppModule {

@@ -265,6 +265,8 @@ export class KuxScrollbarComponent implements AfterViewInit {
   public inited: Promise<any>;
   /** 自动隐藏滚动条 */
   @Input() autoHide: boolean = true;
+  @Input() initScrollTop: number = 0;
+  @Input() initScrollLeft: number = 0;
   @Input() private paddingOffset: number = 0;
   @Output() private onScroll: EventEmitter<{ x: number, y: number }> = new EventEmitter();    //向外部传播滚动事件
   @ViewChild(ScrollbarContent) private content: ScrollbarContent;                             //内容容器
@@ -336,7 +338,7 @@ export class KuxScrollbarComponent implements AfterViewInit {
     } else if (scrollTop >= this.maxYScroll) {
       this.barYAttr.style.transform = `translateY(${this.barYMaxTop + 'px'})`;
     } else {
-      if (e) { e.preventDefault() }
+      if (e) { e.preventDefault(); e.stopPropagation(); }
       this.barYAttr.style.transform = `translateY(${scrollTop / this.maxYScroll * this.barYMaxTop + 'px'})`;
     }
     if (scrollLeft <= 0) {
@@ -344,7 +346,7 @@ export class KuxScrollbarComponent implements AfterViewInit {
     } else if (scrollLeft >= this.maxXScroll) {
       this.barXAttr.style.transform = `translateX(${this.barXMaxLeft + 'px'})`;
     } else {
-      if (e) { e.preventDefault() }
+      if (e) { e.preventDefault(); e.stopPropagation(); }
       this.barXAttr.style.transform = `translateX(${scrollLeft / this.maxXScroll * this.barXMaxLeft + 'px'})`;
     }
   }
@@ -410,6 +412,8 @@ export class KuxScrollbarComponent implements AfterViewInit {
     this.inited = new Promise((resolve, reject) => {
       setTimeout(() => {
         this.initScroll();
+        this.scrollTop = this.initScrollTop;
+        this.scrollLeft = this.initScrollLeft;
         resolve();
       })
     })

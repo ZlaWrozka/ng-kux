@@ -14,15 +14,18 @@ const APP_ROUTES: Routes = [
       }, {
         path: 'datepicker',
         loadChildren: './datepicker#DatepickerModule'
-      },{
-        path:'scroll',
-        loadChildren:'./scroll#ScrollModule'
-      },{
-        path:'pagination',
-        loadChildren:'./pagination#PaginationModule'
-      },{
-        path:'timepicker',
-        loadChildren:'./timepicker#TimepickerModule'
+      }, {
+        path: 'scroll',
+        loadChildren: './scroll#ScrollModule'
+      }, {
+        path: 'pagination',
+        loadChildren: './pagination#PaginationModule'
+      }, {
+        path: 'timepicker',
+        loadChildren: './timepicker#TimepickerModule'
+      }, {
+        path: 'modal',
+        loadChildren: './modal#ModalModule'
       }, {
         path: '**',
         redirectTo: 'select'

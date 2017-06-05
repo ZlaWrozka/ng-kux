@@ -15,4 +15,8 @@ export { KuxPaginationModule } from './dist/pagination';
 export { KuxPaginationComponent } from './dist/pagination/pagination.component';
 
 export { KuxTimepickerModule } from './dist/timepicker';
-export { KuxTimepickerComponent } from './dist/timepicker/timepicker.component'
+export { KuxTimepickerComponent } from './dist/timepicker/timepicker.component';
+
+
+export { KuxModalModule, kuxModalContent, kuxModalAni } from './dist/modal';
+export { KuxModalService } from './dist/modal/modal.helper';

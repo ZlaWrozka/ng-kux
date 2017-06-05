@@ -1,0 +1,27 @@
+.kux-modal-mask
+{
+    position: absolute;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(0, 0, 0, .25);
+}
+.kux-modal-include-content
+{
+    position: absolute;
+    z-index: 1010;
+
+    overflow: hidden;
+
+    width: 100%;
+    height: 100%;
+
+    transform-origin: center;
+}
+.kux-modal-opened{
+    overflow: hidden;
+}
