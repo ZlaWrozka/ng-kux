@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core'
+import { Component, Input, Output, OnInit, EventEmitter, OnChanges } from '@angular/core'
 
 
 @Component({
@@ -36,7 +36,7 @@ import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core'
     },
     styleUrls: ['./pagination.component.css']
 })
-export class KuxPaginationComponent implements OnInit {
+export class KuxPaginationComponent implements OnInit, OnChanges {
     @Input('limit') limit: number;
     @Input('max') max: number = 7;
     @Input('total') total: number;
@@ -100,6 +100,17 @@ export class KuxPaginationComponent implements OnInit {
             this.onPage.emit({ page: this.page, limit: this.limit })
         }
         this.totalPage = Math.ceil(this.total / this.limit);
+    }
+    ngOnChanges(e) {
+        if (this.page > 0) {
+            let maxPage = Math.ceil(this.total / this.limit) - 1;
+            if (maxPage >= 0 && this.page > maxPage) {
+                setTimeout(() => {
+                    this.page = maxPage;
+                    this.onPage.emit({ page: this.page, limit: this.limit })
+                })
+            }
+        }
     }
     showPage(): number[] {
         this.totalPage = Math.ceil(this.total / this.limit);
