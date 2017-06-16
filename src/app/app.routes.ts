@@ -11,13 +11,13 @@ const APP_ROUTES: Routes = [
       }, {
         path: 'scrollbar',
         loadChildren: './scrollBar#ScrollBarModule'
+      },{
+        path:'scroll',
+        loadChildren:'./scroll#ScrollModule'
       }, {
         path: 'datepicker',
         loadChildren: './datepicker#DatepickerModule'
-      }, {
-        path: 'scroll',
-        loadChildren: './scroll#ScrollModule'
-      }, {
+      },{
         path: 'pagination',
         loadChildren: './pagination#PaginationModule'
       }, {

@@ -10,6 +10,7 @@ export { KuxDatepickerComponent, KuxDatepickerPanelComponent, kuxDataFormat } fr
 export { KuxScrollModule } from './dist/scroll';
 export { KuxScrollComponent } from './dist/scroll/scroll.component';
 export { KuxScrollItemDirective } from './dist/scroll/scroll.directive';
+export { KuxScrollStableComponent } from './dist/scroll/scroll.stable.component'
 
 export { KuxPaginationModule } from './dist/pagination';
 export { KuxPaginationComponent } from './dist/pagination/pagination.component';

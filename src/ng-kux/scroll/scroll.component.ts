@@ -6,7 +6,7 @@ import { Subject } from 'rxjs/Subject'
 @Component({
     selector: 'kux-scroll',
     template: `
-        <kux-scrollbar (onScroll)="scrollFn($event)" (wheel)="stopWheel($event)">
+        <kux-scrollbar (scroll)="scrollFn($event)" (wheel)="stopWheel($event)">
             <div class="kux-scroll-holder" [style.height.px]="topHolderHeight"></div>
             <ng-content></ng-content>
             <div class="kux-scroll-holder" [style.height.px]="bottomHolderHeight"></div>
@@ -48,12 +48,12 @@ export class KuxScrollComponent implements AfterViewInit {
             this.param.scrolledTop--;
             this.scrollTopList.push(this.kuxScrollbar.scrollTop);
             this.checkScrollTopList();
-            this.kuxScrollbar.refresh(true).then(() => {
+            this.kuxScrollbar.refresh().then(() => {
                 this.param.scrolledTop++;
                 this.scrollTopList.push(this.kuxScrollbar.scrollTop);
                 this.checkScrollTopList();
                 this.delPreData(this.kuxScrollbar.scrollTop);
-                this.kuxScrollbar.refresh(true).then(() => {
+                this.kuxScrollbar.refresh().then(() => {
                     resolve();
                 })
             })
@@ -123,7 +123,7 @@ export class KuxScrollComponent implements AfterViewInit {
                 if (item.$kuxindex % this.param.length === 0) {
                     let index = item.$kuxindex - this.param.length
                     let t = this.param.index2height[index] || 0;
-                    if (t < this.kuxScrollbar.scrollTop + this.kuxScrollbar.boxHeight * 1.2) {
+                    if (t < this.kuxScrollbar.scrollTop + this.kuxScrollbar.containerHeight * 1.2) {
                         return true;
                     } else {
                         pass = false;
@@ -134,7 +134,7 @@ export class KuxScrollComponent implements AfterViewInit {
                 }
             });
             this.param.end -= (orgL - this.display.length)
-            this.kuxScrollbar.refresh(true).then(() => {
+            this.kuxScrollbar.refresh().then(() => {
                 this.param.begin = _begin;
                 this.scrolling = false
                 this.param.direction = 0;
@@ -160,14 +160,14 @@ export class KuxScrollComponent implements AfterViewInit {
     private fillNext() {
         if (this.param.direction == 1) {
             let last = this.blockItem.last;
-            if (last && last.el.offsetTop + last.height >= this.kuxScrollbar.scrollTop + this.kuxScrollbar.boxHeight * 1.2) {
+            if (last && last.el.offsetTop + last.height >= this.kuxScrollbar.scrollTop + this.kuxScrollbar.containerHeight * 1.2) {
                 this.scrolling = false;
                 return;
             }
             this.findNextData().then(() => {
-                this.kuxScrollbar.refresh(true).then(() => {
+                this.kuxScrollbar.refresh().then(() => {
                     let last = this.blockItem.last;
-                    if (last.el.offsetTop + last.height <= this.kuxScrollbar.scrollTop + this.kuxScrollbar.boxHeight * 1.2) {
+                    if (last.el.offsetTop + last.height <= this.kuxScrollbar.scrollTop + this.kuxScrollbar.containerHeight * 1.2) {
                         this.fillNext();
                     } else {
                         this.param.direction = -1;
@@ -182,7 +182,7 @@ export class KuxScrollComponent implements AfterViewInit {
     }
     //寻找落点
     private findFallPoint(scrollTop) {
-        let _begin = scrollTop - this.kuxScrollbar.boxHeight * 0.1;
+        let _begin = scrollTop - this.kuxScrollbar.containerHeight * 0.1;
         if (_begin < 0) {
             return -1
         } else {
@@ -273,9 +273,9 @@ export class KuxScrollComponent implements AfterViewInit {
         }
     }
     ngAfterViewInit() {
-        this.kuxScrollbar.inited.then(() => {
+        setTimeout(() => {
             this.scrollTopList.push(0);
             this.checkScrollTopList();
-        });
+        },100)
     }
 }

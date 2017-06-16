@@ -14,12 +14,114 @@
     top: 0;
     left: 0;
 
-    overflow:hidden;
+    overflow: hidden;
 
-    height: 100%;
     box-sizing: content-box !important;
+    height: 100%;
 }
-:host:hover >>> .kux-scrollbar-content
+.kux-scrollbar-box.noselect
 {
-    opacity: 1;
+    user-select: none;
+}
+
+
+
+.kux-scroll-bar-rail
+{
+    position: absolute;
+
+    transition: all .2s;
+
+    background: rgba(0, 0, 0, 0);
+    border-radius: 4px;
+}
+.kux-scroll-bar-rail.rail-y
+{
+    top: 0;
+    right: 0;
+
+    width: 4px;
+    height: 100%;
+}
+.kux-scroll-bar-rail.rail-x
+{
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    height: 4px;
+}
+.kux-scroll-bar-rail:hover,
+.kux-scroll-bar-rail.keep
+{
+    background: rgba(0, 0, 0, .15);
+}
+.kux-scroll-bar-rail.rail-y:hover,
+.kux-scroll-bar-rail.rail-y.keep
+{
+    width: 8px;
+}
+.kux-scroll-bar-rail.rail-x:hover,
+.kux-scroll-bar-rail.rail-x.keep
+{
+    height: 8px;
+}
+.kux-scroll-bar-rail.rail-y > div,
+.kux-scroll-bar-rail.rail-x > div
+{
+    position: absolute;
+
+    cursor: default;
+    transition: width .2s, height .2s,background-color .2s;
+
+    border-radius: 2px;
+    background-color: rgba(0, 0, 0, .2);
+}
+:host.auto-hide .kux-scroll-bar-rail.rail-y > div,
+:host.auto-hide .kux-scroll-bar-rail.rail-x > div
+{
+    background-color: rgba(0, 0, 0, 0);
+}
+.kux-scroll-bar-rail.rail-y > div
+{
+    width: 4px;
+}
+.kux-scroll-bar-rail.rail-x > div
+{
+    height: 4px;
+}
+.kux-scroll-bar-rail.rail-y:hover > div,
+.kux-scroll-bar-rail.rail-y.keep > div
+{
+    width: 8px;
+
+    border-radius: 4px;
+}
+.kux-scroll-bar-rail.rail-x:hover > div,
+.kux-scroll-bar-rail.rail-x.keep > div
+{
+    height: 8px;
+
+    border-radius: 4px;
+}
+.kux-scroll-bar-rail.keep > div,
+:host:hover .kux-scroll-bar-rail > div
+{
+    background: rgba(0, 0, 0, .45) !important;
+}
+
+
+
+.log
+{
+    position: absolute;
+    top: 0;
+
+    width: 100%;
+    height: 100px;
+
+    pointer-events: none;
+
+    opacity: .5;
+    background: #fff;
 }
