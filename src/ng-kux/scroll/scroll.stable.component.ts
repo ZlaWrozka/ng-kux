@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, Output, AfterViewInit, ViewChild, Input, EventEmitter } from '@angular/core';
 import { KuxScrollbarComponent } from '../scrollbar/scrollbar.component';
 @Component({
     selector: 'kux-scroll-stable',
@@ -15,9 +15,10 @@ import { KuxScrollbarComponent } from '../scrollbar/scrollbar.component';
 })
 
 export class KuxScrollStableComponent implements AfterViewInit {
-    @ViewChild(KuxScrollbarComponent) private kuxScrollbar: KuxScrollbarComponent
+    @ViewChild(KuxScrollbarComponent) public kuxScrollbar: KuxScrollbarComponent
     @Input() private height: number;
     @Input() public autoHide: boolean
+    @Output() public scroll: EventEmitter<any> = new EventEmitter()
     private length: number = 5;
     public getData: any = () => { return []; }
     public display: any = [];
@@ -34,6 +35,7 @@ export class KuxScrollStableComponent implements AfterViewInit {
 
     }
     scrollFn(e) {
+        this.scroll.emit(e)
         this.scrollTopListWaitCheck.push(e.scrollTop)
         this.checkScrollList();
     }
@@ -159,7 +161,7 @@ export class KuxScrollStableComponent implements AfterViewInit {
         this.maxEnd = 0;
         this.begin = 0;
         this.end = 0;
-        this.scrollTopListWaitCheck=[-1];
+        this.scrollTopListWaitCheck = [-1];
         this.checkScrollList();
     }
     private canStopAdd() {

@@ -62,7 +62,7 @@ export class KuxScrollbarComponent implements OnInit, AfterViewInit {
     x: { active: false, left: 0, width: 0, keep: false },
     y: { active: false, top: 0, height: 0, keep: false }
   }
-  private container = {
+  public container = {
     width: 0,
     height: 0,
     element: null
