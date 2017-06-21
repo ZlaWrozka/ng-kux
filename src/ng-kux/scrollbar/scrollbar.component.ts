@@ -1,4 +1,4 @@
-import { Component, Directive, Self, ElementRef, OnInit, AfterViewInit, Output, Input, ViewChild, EventEmitter } from '@angular/core';
+import { Component, Directive, Self, ElementRef, OnInit, AfterViewInit, Output, Input, ViewChild, EventEmitter,HostBinding } from '@angular/core';
 import { KuxScrollHelper } from './helper';
 
 
@@ -14,9 +14,13 @@ import { KuxScrollHelper } from './helper';
       min-width: 100%;
     }
     `
-  ]
+  ],
+  host:{
+    '[class]':'name?"kux-scrollbar-content"+"-"+name:"kux-scrollbar-content"'
+  }
 })
 export class kuxScrollbarContent {
+  @Input() name: string = null;
   public el: HTMLElement
   constructor(
     el: ElementRef
@@ -31,12 +35,11 @@ export class kuxScrollbarContent {
   }
 }
 
-//<ng-content></ng-content> 
 @Component({
   selector: 'kux-scrollbar',
   template: `
     <div class="kux-scrollbar-box" kux-scrolling (kuxScrolling)="scrollFn($event)" [ngClass]="{noselect:noselect}" (scroll)="emitScroll($event)">
-        <kux-scrollbar-content>
+        <kux-scrollbar-content [name]="name">
           <ng-content></ng-content>
         </kux-scrollbar-content>
     </div>
@@ -46,13 +49,14 @@ export class kuxScrollbarContent {
   styleUrls: ['./scrollbar.component.css'],
   host: {
     '(window:resize)': 'directRefresh()',
-    '[class]': 'autoHide?"kux-scrollbar auto-hide":"kux-scrollbar"'
+    '[class]': 'autoHide?"kux-scrollbar auto-hide "+name:"kux-scrollbar "+name'
   }
 })
 export class KuxScrollbarComponent implements OnInit, AfterViewInit {
   @ViewChild(kuxScrollbarContent) private content: kuxScrollbarContent
   @Output() scroll: EventEmitter<any> = new EventEmitter();
   @Input() autoHide: boolean = false;
+  @Input() name: string = null;
   @Input() mimiScrollBarLength: number = 20;
   @Input() initScrollTop: number = 0;
   @Input() initScrollLeft: number = 0;

@@ -4,6 +4,7 @@ interface kuxModal {
     id: string;
     subject: Subject<subAtc>;
     componentRef: ComponentRef<any>;
+    close:(data?:any)=>void
 }
 interface subAtc {
     action: string;
@@ -53,7 +54,12 @@ export class KuxModalService {
         this.modals[id] = {
             id: id,
             subject: sub,
-            componentRef: tmp
+            componentRef: tmp,
+            close:(data?:any)=>{
+                let e:any ={action:'$close'}
+                if(data){e.data=data};
+                tmp.instance.$emitter.next(e)
+            }
         }
         if (opt.animate) {
             tmp.instance.$kuxAniSta = opt.animate;
