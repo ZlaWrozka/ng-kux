@@ -70,10 +70,15 @@ export const kuxModalAni = trigger('kuxModalAni', [
 })
 export class kuxModalContent {
   public $kuxAniSta;
+  public $disableEscape=false;
   @HostBinding('class') $$className = 'kux-modal-include-content';
   @HostBinding('style.zIndex') $kuxZIndex = 1010;
   @HostListener('@kuxModalAni.done') $$aniEnd() {
     this.$emitter.emit({ action: '$aniEnd' })
+  }
+  @HostListener('document:keydown.escape',['$event']) $$isEsc(e) {
+    if(!this.disableEscape){this.$emitter.emit({ action: '$close' })}
+   
   }
   @Output() public $emitter: EventEmitter<any> = new EventEmitter();
 }
